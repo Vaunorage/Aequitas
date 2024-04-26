@@ -1,7 +1,9 @@
 import os, sys
-os.chdir('..')
+
+from Phemus.src.Phemus import Dataset, run_aequitas
+
+os.chdir('../..')
 sys.path.append(os.getcwd())
-from src.Phemus import *
 # from Phemus import * # <-- use this if loading Phemus from module
 
 def main():
@@ -22,24 +24,24 @@ def main():
     improved_pkl_dir = 'Employee_DecisionTree_Original_Improved.pkl'
     retrain_csv_dir = 'Employee_Retraining_Dataset.csv'
     plot_dir = 'Employee_Fairness_Plot.png'
-    
+
     perturbation_unit = 1
-    
+
     num_trials = 100
     samples = 100
     global_iteration_limit = 1000 # needs to be at least 1000 to be effective
-    local_iteration_limit = 100 
+    local_iteration_limit = 100
     threshold = 0
 
     retrain_csv_dir = 'Employee_Retraining_Dataset.csv'
-    run_aequitas(dataset=dataset, perturbation_unit=perturbation_unit, 
-                    pkl_dir=pkl_dir, improved_pkl_dir=improved_pkl_dir, 
+    run_aequitas(dataset=dataset, perturbation_unit=perturbation_unit,
+                    pkl_dir=pkl_dir, improved_pkl_dir=improved_pkl_dir,
                         retrain_csv_dir=retrain_csv_dir, plot_dir=plot_dir, mode="Fully", threshold=0)
-    
+
     #run_aequitas_once(dataset=dataset, perturbation_unit=perturbation_unit, pkl_dir=pkl_dir, improved_pkl_dir=improved_pkl_dir, retrain_csv_dir=retrain_csv_dir, plot_dir=plot_dir, mode="Fully")
     #run_aequitas_once(dataset=dataset, perturbation_unit=perturbation_unit, pkl_dir=pkl_dir, improved_pkl_dir=improved_pkl_dir, retrain_csv_dir=retrain_csv_dir, plot_dir=plot_dir, mode="Fully")
     #retrain_sklearn(dataset, pkl_dir, retrain_csv_dir, improved_pkl_dir, plot_dir, num_trials, samples)
     #get_fairness_estimation(dataset, pkl_dir, threshold, num_trials, samples)
-    
+
 if __name__ == "__main__":
-    main() 
+    main()

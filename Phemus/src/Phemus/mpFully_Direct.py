@@ -3,9 +3,11 @@ import multiprocessing as mp
 from scipy.optimize import basinhopping
 import errno
 
+
 def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
+
 
 def my_queue_get(queue, block=True, timeout=None):
     while True:
@@ -15,14 +17,15 @@ def my_queue_get(queue, block=True, timeout=None):
             if e.errno != errno.EINTR:
                 raise
 
+
 def worker(fully_direct, local_inputs, minimizer, local_iteration_limit, out_q):
     for inp in local_inputs:
-        basinhopping(fully_direct.evaluate_local, inp, stepsize=1.0, take_step=fully_direct.local_perturbation, 
-                        minimizer_kwargs=minimizer, niter=local_iteration_limit)
+        basinhopping(fully_direct.evaluate_local, inp, stepsize=1.0, take_step=fully_direct.local_perturbation,
+                     minimizer_kwargs=minimizer, niter=local_iteration_limit)
     out_q.put([[fully_direct.local_disc_inputs, fully_direct.local_disc_inputs_list, fully_direct.tot_inputs]])
-    
-def mp_basinhopping(fully_direct, minimizer, local_iteration_limit):
 
+
+def mp_basinhopping(fully_direct, minimizer, local_iteration_limit):
     out_q = mp.Queue()
 
     divided_lists = chunks(fully_direct.global_disc_inputs_list, 4)
@@ -34,8 +37,8 @@ def mp_basinhopping(fully_direct, minimizer, local_iteration_limit):
 
     for i in range(nprocs):
         p = mp.Process(
-                target=worker,
-                args=args[i])
+            target=worker,
+            args=args[i])
         procs.append(p)
         p.start()
 
@@ -47,7 +50,7 @@ def mp_basinhopping(fully_direct, minimizer, local_iteration_limit):
         p.join()
 
     local_inputs = set()
-    local_inputs_list  = []
+    local_inputs_list = []
     tot_inputs_out = set()
 
     for pair in res:
@@ -63,16 +66,9 @@ def mp_basinhopping(fully_direct, minimizer, local_iteration_limit):
         for item in tot_inputs:
             if item not in tot_inputs_out:
                 tot_inputs_out.add(item)
-    
+
     fully_direct.local_disc_inputs = local_inputs
     fully_direct.local_disc_inputs_list = local_inputs_list
     fully_direct.tot_inputs = tot_inputs_out
 
     return fully_direct
-
-
-
-
-
-
-

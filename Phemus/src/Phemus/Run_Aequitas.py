@@ -31,9 +31,9 @@ def run_aequitas(dataset: Dataset, perturbation_unit, pkl_dir, improved_pkl_dir,
 
     generate_sklearn_classifier(dataset, pkl_dir)
 
-    # print(num_of_sens_param)
+    print(num_of_sens_param)
     for i in range(num_of_sens_param):
-        # print(i)
+        print(i)
         dataset.update_sensitive_parameter(i)
         run_aequitas_once(dataset, perturbation_unit, pkl_dir, improved_pkl_dir, \
             retrain_csv_dir, plot_dir, mode, threshold, \
